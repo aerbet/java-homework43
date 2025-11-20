@@ -1,11 +1,11 @@
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import server.BaseServer;
-import java.io.*;
-import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import com.sun.net.httpserver.Headers;
+import java.nio.charset.Charset;
+import server.BaseServer;
+import java.net.URI;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,8 +20,50 @@ public class Main {
 
     private static void initRoutes(HttpServer server) {
         server.createContext("/", Main::handleRequest);
-        server.createContext("/apps/", Main::handleRequest);
-        server.createContext("/apps/profile", Main::handleRequest);
+        server.createContext("/apps/", Main::handleRequestApps);
+        server.createContext("/apps/profile", Main::handleRequestProfile);
+    }
+
+    private static void handleRequestProfile(HttpExchange exchange) {
+        try {
+            exchange.getResponseHeaders().add("Content-Type", "text/plain;charset=utf-8");
+            int responseCode = 200;
+            int length = 0;
+            exchange.sendResponseHeaders(responseCode, length);
+
+            try (PrintWriter writer = getWriterFrom(exchange)) {
+                String method = exchange.getRequestMethod();
+                URI uri = exchange.getRequestURI();
+                String ctxPath = exchange.getHttpContext().getPath();
+
+                write(writer, "Pentagon", "President DNA is confirmed!");
+                write(writer, "Pentagon", "Welcome Mr. President!");
+                writer.flush();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    private static void handleRequestApps(HttpExchange exchange) {
+        try {
+            exchange.getResponseHeaders().add("Content-Type", "text/plain;charset=utf-8");
+            int responseCode = 200;
+            int length = 0;
+            exchange.sendResponseHeaders(responseCode, length);
+
+            try (PrintWriter writer = getWriterFrom(exchange)) {
+                String method = exchange.getRequestMethod();
+                URI uri = exchange.getRequestURI();
+                String ctxPath = exchange.getHttpContext().getPath();
+
+                write(writer, "Play market", "Your application is suspected of having virus!");
+                write(writer, "Play market", "Fix your issue or we'll delete it from our market!");
+                writer.flush();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
     private static void handleRequest(HttpExchange exchange) {
